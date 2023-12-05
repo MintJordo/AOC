@@ -1,0 +1,60 @@
+use core {*}
+
+convertToInt :: (ch: u8) -> i32
+{
+    return cast(i32) (ch - '0');
+}
+
+main :: ()
+{
+    file := os.get_contents("inputs/day1.txt");
+    
+    sum := 0;
+    for line: string.split_iter(file, '\n')
+    {
+        firstNum: i32 = 0;
+        secondNum: i32 = 0;
+
+        for i: 0 .. line.length
+        {
+            if u8.is_num(line[i])
+            {
+                if firstNum == 0
+                {
+                    firstNum = convertToInt(line[i]);
+                }
+                secondNum = convertToInt(line[i]);
+            }
+
+            remaining: str = line[i .. line.length];
+            check("zero", 0);
+            check("one", 1);
+            check("two", 2);
+            check("three", 3);
+            check("four", 4);
+            check("five", 5);
+            check("six", 6);
+            check("seven", 7);
+            check("eight", 8);
+            check("nine", 9);
+
+            check :: macro (prefix: str, value: i32)
+            {
+                if string.starts_with(remaining, prefix)
+                {
+                    if firstNum == 0
+                    {
+                        firstNum = value;
+                    }
+                    secondNum = value;
+                }
+            }
+        }
+
+        subtotal := firstNum * 10 + secondNum;
+        println(subtotal);
+        sum += subtotal;
+    }
+
+    printf("Part 1: {}\n", sum);
+}
