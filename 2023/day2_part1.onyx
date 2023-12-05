@@ -1,0 +1,55 @@
+use core{*}
+
+main :: ()
+{
+    file := os.get_contents("inputs/day2.txt");
+    sum: i64 = 0;
+
+    for line: string.split_iter(file, '\n')
+    {
+        colonIndex := string.index_of(line, ':');
+        gameID := conv.parse_int(line[5 .. colonIndex]);
+        legalGame := true;
+
+        string.advance(&line, colonIndex + 1);
+
+        for gameInfo: string.split_iter(line, ';')
+        {
+            for grabs: string.split_iter(gameInfo, ',')
+            {
+                string.strip_whitespace(&grabs);
+                count := conv.parse_int(&grabs);
+                string.advance(&line, 1);
+
+                if grabs == " red"
+                {
+                    if count > 12
+                    {
+                        legalGame = false;
+                    }
+                }
+                elseif grabs == " green"
+                {
+                    if count > 13
+                    {
+                        legalGame = false;
+                    }
+                }
+                else
+                {
+                    if count > 14
+                    {
+                        legalGame = false;
+                    }
+                }
+            }
+        }
+
+        if legalGame
+        {
+            sum += gameID;
+        }
+    }
+
+    printf("Part 1: {}\n", sum);
+}
