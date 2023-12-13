@@ -1,0 +1,63 @@
+use core{*}
+
+main :: ()
+{
+    file := os.get_contents("inputs/day4.txt");
+    winningNums: [..] i64;
+    cardNums: [..] i64;
+    sum: i64 = 0;
+
+    for line: string.split_iter(file, '\n')
+    {
+        beforePipe := true;
+        cardTotal: i64 = 0;
+        array.clear(&winningNums);
+        array.clear(&cardNums);
+
+        for info: string.split_iter(line, ' ')
+        {
+            if info == "|"
+            {
+                beforePipe = false;
+            }
+            
+            if slice.every(info, [c](c->is_num()))
+            {
+                tmp := conv.parse_int(&info);
+
+                if tmp != 0 && beforePipe
+                {
+                    winningNums << tmp;
+                }
+                elseif tmp != 0 && !beforePipe
+                {
+                    cardNums << tmp;
+                }
+            }
+        }
+
+        //logic
+        for item: cardNums
+        {
+            for i: winningNums
+            {
+                if item == i
+                {
+                    if cardTotal == 0
+                    {
+                        cardTotal = 1;
+                    }
+                    else
+                    {
+                        cardTotal *= 2;
+                    }
+                    break;
+                }
+            }
+        }
+
+        sum += cardTotal;
+    }
+
+    printf("Part 1: {}\n", sum);
+}

@@ -1,0 +1,76 @@
+use core{*}
+
+main :: ()
+{
+    file := os.get_contents("inputs/day4.txt");
+    winningNums: [..] i64;
+    cardNums: [..] i64;
+    numCopies: [..] i64;
+    totalCards: [..] i64;
+
+    for line: string.split_iter(file, '\n')
+    {
+        beforePipe := true;
+        cardTotal: i64 = 0;
+        array.clear(&winningNums);
+        array.clear(&cardNums);
+
+        for info: string.split_iter(line, ' ')
+        {
+            if info == "|"
+            {
+                beforePipe = false;
+            }
+            
+            if slice.every(info, [c](c->is_num()))
+            {
+                tmp := conv.parse_int(&info);
+
+                if tmp != 0 && beforePipe
+                {
+                    winningNums << tmp;
+                }
+                elseif tmp != 0 && !beforePipe
+                {
+                    cardNums << tmp;
+                }
+            }
+        }
+
+        for item: cardNums
+        {
+            for i: winningNums
+            {
+                if item == i
+                {
+                    cardTotal += 1;
+                    break;
+                }
+            }
+        }
+        numCopies << cardTotal;
+    }
+    
+    // Initialize totalCards array
+    for i: 0 .. numCopies.length
+    {
+        totalCards << 0;
+    }
+
+    // Evaluate total number of each card
+    for i: 0 .. totalCards.length
+    {
+        // Count initial card
+        totalCards[i] += 1;
+
+        for mul: 0 .. cast(i32) totalCards[i]
+        {
+            for j: 1 .. cast(i32) numCopies[i]+1
+            {
+                totalCards[i+j] += 1;
+            }
+        }
+    }
+
+    printf("Part 2: {}\n", array.sum(totalCards));
+}
